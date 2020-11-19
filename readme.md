@@ -1,1 +1,1 @@
-# Mini Drop Contract
+# Mint Drop Contract
