@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract vETH is ERC20, Ownable {
 
-    constructor(string memory name, string memory symbol, address owner_) public ERC20(name, symbol) Ownable() {
+    constructor(address owner_) public ERC20("Voucher Ethereum", "vETH") Ownable() {
         super.transferOwnership(owner_);
     }
 
