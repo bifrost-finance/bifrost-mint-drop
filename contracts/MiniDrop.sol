@@ -101,7 +101,9 @@ contract MiniDrop is Ownable {
         if (myLastClaimedAt[msg.sender] == 0) {
             myLastClaimedAt[msg.sender] = now;
         } else {
-            myRewards[msg.sender] = getRewards(msg.sender);
+            uint rewards = getIncrementalRewards(msg.sender);
+            myRewards[msg.sender] = myRewards[msg.sender].add(rewards);
+            claimedRewards = claimedRewards.add(rewards);
             myLastClaimedAt[msg.sender] = now;
             emit Claimed(msg.sender, myRewards[msg.sender]);
         }
@@ -113,9 +115,9 @@ contract MiniDrop is Ownable {
         bytes calldata signature,
         bytes32 deposit_data_root
     ) external onlyOwner isWithdrawLocked {
+        require(address(this).balance.add(totalLocked) == totalDeposit, "invalid balance");
         uint amount = 32 ether;
         totalLocked = totalLocked.add(amount);
-        require(address(this).balance.add(totalLocked) == totalDeposit, "invalid balance");
         IDepositContract(depositAddress).deposit{value: amount}(
             pubkey,
             withdrawal_credentials,
@@ -145,11 +147,11 @@ contract MiniDrop is Ownable {
         return TOTAL_BNC_REWARDS.div(BONUS_DURATION).mul(now.sub(bonusStartAt));
     }
 
-    function getRewards(address target) public view returns (uint) {
+    function getIncrementalRewards(address target) public view returns (uint) {
         uint totalRewards = getTotalRewards();
         if (
-            myLastClaimedAt[msg.sender] == 0 ||
-            myLastClaimedAt[msg.sender] < bonusStartAt ||
+            myLastClaimedAt[target] == 0 ||
+            myLastClaimedAt[target] < bonusStartAt ||
             totalDeposit == 0 ||
             totalRewards == 0
         ) {
@@ -165,7 +167,11 @@ contract MiniDrop is Ownable {
             .div(totalDeposit)
             .mul(myDuration)
             .div(MAX_CLAIM_DURATION);
-        return myRewards[target].add(rewards);
+        return rewards;
+    }
+
+    function getRewards(address target) public view returns (uint) {
+        return myRewards[target].add(getIncrementalRewards(target));
     }
 
     modifier isWithdrawLocked() {
