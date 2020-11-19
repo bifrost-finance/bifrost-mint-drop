@@ -23,7 +23,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./DepositContract.sol";
 import "./interfaces/IVETH.sol";
 
-contract vETHDeposit is Ownable {
+contract MiniDrop is Ownable {
     using SafeMath for uint;
 
     /* ========== CONSTANTS ========== */
