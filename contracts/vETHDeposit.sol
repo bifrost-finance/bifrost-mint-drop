@@ -1,3 +1,16 @@
+//  =========================================================================================
+//
+//   ___ __ __    ________  ___   __     ________      ______   ______    ______   ______
+//  /__//_//_/\  /_______/\/__/\ /__/\  /_______/\    /_____/\ /_____/\  /_____/\ /_____/\
+//  \::\| \| \ \ \__.::._\/\::\_\\  \ \ \__.::._\/    \:::_ \ \\:::_ \ \ \:::_ \ \\:::_ \ \
+//   \:.      \ \   \::\ \  \:. `-\  \ \   \::\ \      \:\ \ \ \\:(_) ) )_\:\ \ \ \\:(_) \ \
+//    \:.\-/\  \ \  _\::\ \__\:. _    \ \  _\::\ \__    \:\ \ \ \\: __ `\ \\:\ \ \ \\: ___\/
+//     \. \  \  \ \/__\::\__/\\. \`-\  \ \/__\::\__/\    \:\/.:| |\ \ `\ \ \\:\_\ \ \\ \ \
+//      \__\/ \__\/\________\/ \__\/ \__\/\________\/     \____/_/ \_\/ \_\/ \_____\/ \_\/
+//
+//  =========================================================================================
+
+
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.6.11;
@@ -16,6 +29,7 @@ contract vETHDeposit is Ownable {
     /* ========== CONSTANTS ========== */
 
     uint constant public BONUS_DURATION = 64 days;
+    uint constant public MAX_CLAIM_DURATION = 1 days;
     uint constant public TOTAL_BNC_REWARDS = 120000 ether;
 
     /* ========== STATE VARIABLES ========== */
@@ -27,13 +41,11 @@ contract vETHDeposit is Ownable {
     // a flag to control whether the withdraw function is locked
     bool public withdrawLocked;
     // a timestamp when the bonus activity initialized
-    uint public initAt;
+    uint public bonusStartAt;
     // total amount of ETH deposited to Ethereum 2.0 Deposit Contract
-    uint public totalStaked;
+    uint public totalLocked;
     // total amount of ETH deposited in this contract
     uint public totalDeposit;
-    // total amount of BNC will be rewarded to users
-    uint public totalRewards;
     // total claimed amount of BNC rewards
     uint public claimedRewards;
     // user address => amount of ETH deposited by this user in this contract
@@ -53,10 +65,10 @@ contract vETHDeposit is Ownable {
 
     /* ========== CONSTRUCTOR ========== */
 
-    constructor(address vETHAddress_, address depositAddress_, uint initAt_) public Ownable() {
+    constructor(address vETHAddress_, address depositAddress_, uint bonusStartAt_) public Ownable() {
         vETHAddress = vETHAddress_;
         depositAddress = depositAddress_;
-        initAt = initAt_;
+        bonusStartAt = bonusStartAt_;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
@@ -80,6 +92,13 @@ contract vETHDeposit is Ownable {
     }
 
     function claimRewards() public {
+        // claim must start from bonusStartAt
+        if (now < bonusStartAt) {
+            if (myLastClaimedAt[msg.sender] == 0) {
+                myLastClaimedAt[msg.sender] = bonusStartAt;
+            }
+            return;
+        }
         if (myLastClaimedAt[msg.sender] == 0) {
             myLastClaimedAt[msg.sender] = now;
         } else {
@@ -89,14 +108,15 @@ contract vETHDeposit is Ownable {
         }
     }
 
-    function newValidator(
+    function lockForValidator(
         bytes calldata pubkey,
         bytes calldata withdrawal_credentials,
         bytes calldata signature,
         bytes32 deposit_data_root
     ) external onlyOwner isWithdrawLocked {
         uint amount = 32 ether;
-        totalStaked = totalStaked.add(amount);
+        totalLocked = totalLocked.add(amount);
+        require(address(this).balance.add(totalLocked) == totalDeposit, "invalid balance");
         IDepositContract(depositAddress).deposit{value: amount}(
             pubkey,
             withdrawal_credentials,
@@ -119,19 +139,33 @@ contract vETHDeposit is Ownable {
 
     /* ========== VIEWS ========== */
 
-    function getRewards(address target) public view returns (uint) {
-        if (myLastClaimedAt[msg.sender] == 0) {
+    function getTotalRewards() public view returns (uint) {
+        if (now < bonusStartAt) {
             return 0;
         }
-        uint currentRewards = totalRewards.sub(claimedRewards);
-        uint duration = now.sub(myLastClaimedAt[target]);
-        if (duration > BONUS_DURATION) {
-            duration = BONUS_DURATION;
+        return TOTAL_BNC_REWARDS.div(BONUS_DURATION).mul(now.sub(bonusStartAt));
+    }
+
+    function getRewards(address target) public view returns (uint) {
+        uint totalRewards = getTotalRewards();
+        if (
+            myLastClaimedAt[msg.sender] == 0 ||
+            myLastClaimedAt[msg.sender] < bonusStartAt ||
+            totalDeposit == 0 ||
+            totalRewards == 0
+        ) {
+            return 0;
         }
-        uint rewards = currentRewards.mul(
-            myDeposit[target].div(totalDeposit)
-                .mul(now.sub(myLastClaimedAt[target])).div(BONUS_DURATION)
-        );
+        uint remainingRewards = totalRewards.sub(claimedRewards);
+        uint myDuration = now.sub(myLastClaimedAt[target]);
+        if (myDuration > MAX_CLAIM_DURATION) {
+            myDuration = MAX_CLAIM_DURATION;
+        }
+        uint rewards = remainingRewards
+            .mul(myDeposit[target])
+            .div(totalDeposit)
+            .mul(myDuration)
+            .div(MAX_CLAIM_DURATION);
         return myRewards[target].add(rewards);
     }
 
