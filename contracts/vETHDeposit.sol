@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./interfaces/IDepositContract.sol";
+import "./DepositContract.sol";
 import "./interfaces/IVETH.sol";
 
 contract vETHDeposit is Ownable {
@@ -20,17 +20,29 @@ contract vETHDeposit is Ownable {
 
     /* ========== STATE VARIABLES ========== */
 
+    // address of vETH
     address public vETHAddress;
+    // address of Ethereum 2.0 Deposit Contract
     address public depositAddress;
+    // a flag to control whether the withdraw function is locked
     bool public withdrawLocked;
+    // a timestamp when the bonus activity initialized
     uint public initAt;
+    // total amount of ETH deposited to Ethereum 2.0 Deposit Contract
     uint public totalStaked;
+    // total amount of ETH deposited in this contract
     uint public totalDeposit;
+    // total amount of BNC will be rewarded to users
     uint public totalRewards;
+    // total claimed amount of BNC rewards
     uint public claimedRewards;
+    // user address => amount of ETH deposited by this user in this contract
     mapping(address => uint) public myDeposit;
+    // user address => amount of BNC rewards that will rewarded to this user
     mapping(address => uint) public myRewards;
+    // user address => a timestamp that this user claimed rewards
     mapping(address => uint) public myLastClaimedAt;
+    // user address => the address of this user which in ss58 format on Bifrost Network
     mapping(address => string) public bifrostAddress;
 
     /* ========== EVENTS ========== */
