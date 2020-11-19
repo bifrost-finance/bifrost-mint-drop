@@ -28,7 +28,7 @@ contract MintDrop is Ownable {
     /* ========== CONSTANTS ========== */
 
     uint constant public BONUS_DURATION = 64 days;
-    uint constant public MAX_CLAIM_DURATION = 1 days;
+    uint constant public MAX_CLAIM_DURATION = 7 days;
     uint constant public TOTAL_BNC_REWARDS = 120000 ether;
 
     /* ========== STATE VARIABLES ========== */
@@ -61,6 +61,8 @@ contract MintDrop is Ownable {
     event Deposit(address indexed sender, uint amount);
     event Withdrawal(address indexed sender, uint amount);
     event Claimed(address indexed sender, uint amount);
+    event NewValidator(bytes little_endian_deposit_count);
+    event BindAddress(address indexed sender, string bifrostAddress);
 
     /* ========== CONSTRUCTOR ========== */
 
@@ -82,7 +84,6 @@ contract MintDrop is Ownable {
 
     function withdraw(uint amount) external isWithdrawNotLocked {
         claimRewards();
-        require(IERC20(vETHAddress).balanceOf(msg.sender) >= amount, "insufficient amount");
         myDeposit[msg.sender] = myDeposit[msg.sender].sub(amount);
         totalDeposit = totalDeposit.sub(amount);
         IVETH(vETHAddress).burn(msg.sender, amount);
@@ -98,15 +99,14 @@ contract MintDrop is Ownable {
             }
             return;
         }
-        if (myLastClaimedAt[msg.sender] == 0) {
-            myLastClaimedAt[msg.sender] = now;
-        } else {
+        if (myLastClaimedAt[msg.sender] > 0) {
             uint rewards = getIncrementalRewards(msg.sender);
             myRewards[msg.sender] = myRewards[msg.sender].add(rewards);
             claimedRewards = claimedRewards.add(rewards);
             myLastClaimedAt[msg.sender] = now;
             emit Claimed(msg.sender, myRewards[msg.sender]);
         }
+        myLastClaimedAt[msg.sender] = now;
     }
 
     function lockForValidator(
@@ -115,8 +115,9 @@ contract MintDrop is Ownable {
         bytes calldata signature,
         bytes32 deposit_data_root
     ) external onlyOwner isWithdrawLocked {
-        require(address(this).balance.add(totalLocked) == totalDeposit, "invalid balance");
         uint amount = 32 ether;
+        require(address(this).balance >= amount, "insufficient balance");
+        require(address(this).balance.add(totalLocked) == totalDeposit, "invalid balance");
         totalLocked = totalLocked.add(amount);
         IDepositContract(depositAddress).deposit{value: amount}(
             pubkey,
@@ -124,10 +125,12 @@ contract MintDrop is Ownable {
             signature,
             deposit_data_root
         );
+        emit NewValidator(IDepositContract(depositAddress).get_deposit_count());
     }
 
     function bindBifrostAddress(string memory bifrostAddress_) external {
         bifrostAddress[msg.sender] = bifrostAddress_;
+        emit BindAddress(msg.sender, bifrostAddress_);
     }
 
     function lockWithdraw() external onlyOwner {
@@ -144,14 +147,17 @@ contract MintDrop is Ownable {
         if (now < bonusStartAt) {
             return 0;
         }
-        return TOTAL_BNC_REWARDS.div(BONUS_DURATION).mul(now.sub(bonusStartAt));
+        uint duration = now.sub(bonusStartAt);
+        if (duration > BONUS_DURATION) {
+            return TOTAL_BNC_REWARDS;
+        }
+        return TOTAL_BNC_REWARDS.mul(duration).div(BONUS_DURATION);
     }
 
     function getIncrementalRewards(address target) public view returns (uint) {
         uint totalRewards = getTotalRewards();
         if (
-            myLastClaimedAt[target] == 0 ||
-            myLastClaimedAt[target] < bonusStartAt ||
+            myLastClaimedAt[target] <= bonusStartAt ||
             totalDeposit == 0 ||
             totalRewards == 0
         ) {
