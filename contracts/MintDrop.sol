@@ -60,7 +60,7 @@ contract MintDrop is Ownable {
 
     event Deposit(address indexed sender, uint amount);
     event Withdrawal(address indexed sender, uint amount);
-    event Claimed(address indexed sender, uint amount);
+    event Claimed(address indexed sender, uint amount, uint claimed);
     event NewValidator(bytes little_endian_deposit_count);
     event BindAddress(address indexed sender, string bifrostAddress);
 
@@ -103,10 +103,11 @@ contract MintDrop is Ownable {
             uint rewards = getIncrementalRewards(msg.sender);
             myRewards[msg.sender] = myRewards[msg.sender].add(rewards);
             claimedRewards = claimedRewards.add(rewards);
-            myLastClaimedAt[msg.sender] = now;
-            emit Claimed(msg.sender, myRewards[msg.sender]);
+            emit Claimed(msg.sender, myRewards[msg.sender], claimedRewards);
         }
-        myLastClaimedAt[msg.sender] = now;
+        myLastClaimedAt[msg.sender] = now > bonusStartAt.add(BONUS_DURATION)
+            ? bonusStartAt.add(BONUS_DURATION)
+            : now;
     }
 
     function lockForValidator(
@@ -164,7 +165,9 @@ contract MintDrop is Ownable {
             return 0;
         }
         uint remainingRewards = totalRewards.sub(claimedRewards);
-        uint myDuration = now.sub(myLastClaimedAt[target]);
+        uint myDuration = now > bonusStartAt.add(BONUS_DURATION)
+            ? bonusStartAt.add(BONUS_DURATION).sub(myLastClaimedAt[target])
+            : now.sub(myLastClaimedAt[target]);
         if (myDuration > MAX_CLAIM_DURATION) {
             myDuration = MAX_CLAIM_DURATION;
         }
