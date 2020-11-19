@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.0;
+pragma solidity 0.6.11;
 
 import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
@@ -53,7 +53,8 @@ contract vETHDeposit is Ownable {
 
     /* ========== CONSTRUCTOR ========== */
 
-    constructor(address depositAddress_, uint initAt_) public Ownable() {
+    constructor(address vETHAddress_, address depositAddress_, uint initAt_) public Ownable() {
+        vETHAddress = vETHAddress_;
         depositAddress = depositAddress_;
         initAt = initAt_;
     }
@@ -102,10 +103,6 @@ contract vETHDeposit is Ownable {
             signature,
             deposit_data_root
         );
-    }
-
-    function setVETHAddress(address vETHAddress_) external onlyOwner {
-        vETHAddress = vETHAddress_;
     }
 
     function bindBifrostAddress(string memory bifrostAddress_) external {

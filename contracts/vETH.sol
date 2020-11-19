@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.0;
+pragma solidity 0.6.11;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract vETH is ERC20, Ownable {
 
-    constructor(address owner_) public ERC20("Voucher Ethereum", "vETH") Ownable() {
-        super.transferOwnership(owner_);
-    }
+    constructor() public ERC20("Voucher Ethereum", "vETH") Ownable() {}
 
     function mint(address account, uint amount) external onlyOwner {
         super._mint(account, amount);
