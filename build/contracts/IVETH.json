@@ -1,0 +1,274 @@
+{
+  "fileName": "IVETH.sol",
+  "contractName": "IVETH",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.6.0;\n\ninterface IVETH {\n    function mint(address account, uint amount) external;\n    function burn(address account, uint amount) external;\n}\n",
+  "sourcePath": "contracts/interfaces/IVETH.sol",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "ast": {
+    "absolutePath": "contracts/interfaces/IVETH.sol",
+    "exportedSymbols": {
+      "IVETH": [
+        2308
+      ]
+    },
+    "id": 2309,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2293,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:9"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2308,
+        "linearizedBaseContracts": [
+          2308
+        ],
+        "name": "IVETH",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "40c10f19",
+            "id": 2300,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "mint",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 2298,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2295,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 2300,
+                  "src": "94:15:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2294,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "94:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2297,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 2300,
+                  "src": "111:11:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2296,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "111:4:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "93:30:9"
+            },
+            "returnParameters": {
+              "id": 2299,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "132:0:9"
+            },
+            "scope": 2308,
+            "src": "80:53:9",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "9dc29fac",
+            "id": 2307,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "burn",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 2305,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2302,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 2307,
+                  "src": "152:15:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2301,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "152:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2304,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 2307,
+                  "src": "169:11:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2303,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "169:4:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "151:30:9"
+            },
+            "returnParameters": {
+              "id": 2306,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "190:0:9"
+            },
+            "scope": 2308,
+            "src": "138:53:9",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 2309,
+        "src": "58:135:9"
+      }
+    ],
+    "src": "33:161:9"
+  },
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.11+commit.5ef660b1.Emscripten.clang",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "evmVersion": "petersburg"
+  }
+}
