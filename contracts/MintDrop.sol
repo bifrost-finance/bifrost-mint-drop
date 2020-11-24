@@ -28,7 +28,7 @@ contract MintDrop is Ownable {
     /* ========== CONSTANTS ========== */
 
     uint constant public BONUS_DURATION = 32 days;
-    uint constant public MAX_CLAIM_DURATION = 32 days;
+    uint constant public MAX_CLAIM_DURATION = 8 days;
     uint constant public TOTAL_BNC_REWARDS = 100000 ether;
 
     /* ========== STATE VARIABLES ========== */
@@ -158,7 +158,7 @@ contract MintDrop is Ownable {
     function getIncrementalRewards(address target) public view returns (uint) {
         uint totalRewards = getTotalRewards();
         if (
-            myLastClaimedAt[target] <= bonusStartAt ||
+            myLastClaimedAt[target] < bonusStartAt ||
             totalDeposit == 0 ||
             totalRewards == 0
         ) {
