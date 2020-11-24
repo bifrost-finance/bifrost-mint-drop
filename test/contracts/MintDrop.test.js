@@ -53,32 +53,35 @@ describe('MintDrop', function () {
             this.mintDrop.lockWithdraw({ from: user1 }),
             "caller is not the owner"
         );
-        await expectRevert(
-            this.mintDrop.unlockWithdraw({ from: user1 }),
-            "caller is not the owner"
-        );
-        await this.mintDrop.lockWithdraw({ from: owner });
-        await expectRevert(
-            this.mintDrop.withdraw(amount, { from: user1 }),
-            "withdrawal locked"
-        );
-        await this.mintDrop.unlockWithdraw({ from: owner });
         await this.mintDrop.withdraw(amount, { from: user1 });
         expect(await web3.eth.getBalance(this.mintDrop.address)).to.be.bignumber.equal(new BN('0'));
         expect(await this.mintDrop.myDeposit(user1)).to.be.bignumber.equal(ether('0'));
         expect(await this.mintDrop.totalDeposit()).to.be.bignumber.equal(ether('0'));
         expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(ether('0'));
         expect(await this.veth.totalSupply()).to.be.bignumber.equal(ether('0'));
+        await this.mintDrop.lockWithdraw({ from: owner });
+        await expectRevert(
+            this.mintDrop.withdraw(amount, { from: user1 }),
+            "withdrawal locked"
+        );
     });
 
     it('when claim rewards should be ok', async function () {
         const amount = ether('5');
         await this.mintDrop.deposit({ from: user1, value: amount });
+        expect(await this.mintDrop.myLastClaimedAt(user1)).to.be.bignumber.equal(await time.latest());
         expect(await this.mintDrop.myDeposit(user1)).to.be.bignumber.equal(amount);
         expect(await this.mintDrop.totalDeposit()).to.be.bignumber.equal(amount);
         expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(amount);
         expect(await this.veth.totalSupply()).to.be.bignumber.equal(amount);
+
+        await time.increase(time.duration.days(32));
         await this.mintDrop.claimRewards({ from: user1 });
+    });
+
+    it('when getTotalRewards() should be ok', async function () {
+        await time.increase(time.duration.days(32));
+        expect(await this.mintDrop.getTotalRewards()).to.be.bignumber.equal(ether('100000'));
     });
 
     it('when new validator should be ok', async function () {

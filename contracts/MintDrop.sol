@@ -27,9 +27,9 @@ contract MintDrop is Ownable {
 
     /* ========== CONSTANTS ========== */
 
-    uint constant public BONUS_DURATION = 64 days;
-    uint constant public MAX_CLAIM_DURATION = 7 days;
-    uint constant public TOTAL_BNC_REWARDS = 120000 ether;
+    uint constant public BONUS_DURATION = 32 days;
+    uint constant public MAX_CLAIM_DURATION = 32 days;
+    uint constant public TOTAL_BNC_REWARDS = 100000 ether;
 
     /* ========== STATE VARIABLES ========== */
 
@@ -78,6 +78,7 @@ contract MintDrop is Ownable {
         claimRewards();
         myDeposit[msg.sender] = myDeposit[msg.sender].add(msg.value);
         totalDeposit = totalDeposit.add(msg.value);
+        // mint vETH, MintDrop should have ownership of vETH contract
         IVETH(vETHAddress).mint(msg.sender, msg.value);
         emit Deposit(msg.sender, msg.value);
     }
@@ -86,6 +87,7 @@ contract MintDrop is Ownable {
         claimRewards();
         myDeposit[msg.sender] = myDeposit[msg.sender].sub(amount);
         totalDeposit = totalDeposit.sub(amount);
+        // burn vETH, MintDrop should have ownership of vETH contract
         IVETH(vETHAddress).burn(msg.sender, amount);
         msg.sender.transfer(amount);
         emit Withdrawal(msg.sender, amount);
@@ -136,10 +138,8 @@ contract MintDrop is Ownable {
 
     function lockWithdraw() external onlyOwner {
         withdrawLocked = true;
-    }
-
-    function unlockWithdraw() external onlyOwner {
-        withdrawLocked = false;
+        // enable vETH transfer, MintDrop should have ownership of vETH contract
+        IVETH(vETHAddress).unpause();
     }
 
     /* ========== VIEWS ========== */
