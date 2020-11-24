@@ -80,5 +80,42 @@ describe('vETH', function () {
         );
     });
 
-    shouldBehaveLikeERC20('ERC20', initialSupply, owner, recipient, anotherAccount);
+    it('transfer should be locked by default', async function () {
+        const amount = ether('100');
+        await expectRevert(
+            this.token.transfer(recipient, amount, { from: owner }),
+            'vETH: transfer while paused.'
+        );
+    });
+
+    it('transferFrom should be locked by default', async function () {
+        const amount = ether('100');
+        await this.token.approve(anotherAccount, amount);
+        await expectRevert(
+            this.token.transferFrom(owner, anotherAccount, amount, { from: owner }),
+            'vETH: transfer while paused.'
+        );
+    });
+
+    it('unpause transfer should be ok', async function () {
+        const amount = ether('100');
+        await this.token.unpause({ from: owner });
+        await this.token.transfer(recipient, amount, { from: owner });
+        expect(await this.token.balanceOf(recipient)).to.be.bignumber.equal(amount);
+    });
+
+    it('unpause transferFrom should be ok', async function () {
+        const amount = ether('100');
+        await this.token.unpause({ from: owner });
+        await this.token.approve(anotherAccount, amount, { from: owner });
+        await this.token.transferFrom(owner, recipient, amount, { from: anotherAccount });
+        expect(await this.token.balanceOf(recipient)).to.be.bignumber.equal(amount);
+    });
+
+    describe('ERC20 behave', function () {
+        beforeEach(async function () {
+            await this.token.unpause({from: owner});
+        });
+        shouldBehaveLikeERC20('ERC20', initialSupply, owner, recipient, anotherAccount);
+    });
 });
