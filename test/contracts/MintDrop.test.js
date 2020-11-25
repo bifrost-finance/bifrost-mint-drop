@@ -10,7 +10,7 @@ const DepositContract = contract.fromArtifact('DepositContract');
 
 // Start test block
 describe('MintDrop', function () {
-    const [ owner, user1 ] = accounts;
+    const [ owner, user1, user2 ] = accounts;
     const BONUS_DURATION = 32;
     const MAX_CLAIM_DURATION = 8;
     const TOTAL_BNC_REWARDS = ether('100000');
@@ -87,6 +87,16 @@ describe('MintDrop', function () {
                     withdrawal_credentials,
                     signature,
                     deposit_data_root,
+                    { from: user1 }
+                ),
+                "caller is not the owner"
+            );
+            await expectRevert(
+                this.mintDrop.lockForValidator(
+                    pubkey,
+                    withdrawal_credentials,
+                    signature,
+                    deposit_data_root,
                     { from: owner }
                 ),
                 "withdrawal not locked"
@@ -101,6 +111,20 @@ describe('MintDrop', function () {
             );
             expect(await web3.eth.getBalance(this.mintDrop.address)).to.be.bignumber.equal(ether('0'));
             expect(await web3.eth.getBalance(this.deposit.address)).to.be.bignumber.equal(amount);
+        });
+
+        it('vETH transfer should be ok', async function () {
+            const amount = ether('10');
+            await this.mintDrop.deposit({ from: user1, value: amount });
+            expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(amount);
+            await expectRevert(
+                this.veth.transfer(user2, amount, { from: user1 }),
+                "vETH: transfer while paused."
+            );
+            await this.mintDrop.lockWithdraw({ from: owner });
+            await this.veth.transfer(user2, amount, { from: user1 });
+            expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(ether('0'));
+            expect(await this.veth.balanceOf(user2)).to.be.bignumber.equal(amount);
         });
 
         it('bind bifrost address should be ok', async function () {
@@ -160,6 +184,43 @@ describe('MintDrop', function () {
                         .divRound(ether('1'))
                 );
             }
+        });
+    });
+
+    describe('MintDrop 4', function () {
+        let initialAt;
+        beforeEach(async function () {
+            // Deploy MintDrop contract for each test
+            initialAt = await time.latest();
+            bonusStartAt = initialAt.add(time.duration.days(1));
+            this.mintDrop4 = await MintDrop.new(this.veth.address, this.deposit.address, bonusStartAt, { from: owner });
+            await this.veth.transferOwnership(this.mintDrop4.address, { from: owner });
+        });
+
+        it('when getTotalRewards() should be ok', async function () {
+            await time.increaseTo(initialAt.add(time.duration.hours(12)));
+            expect(await this.mintDrop4.getTotalRewards()).to.be.bignumber.equal(ether('0'));
+            await time.increaseTo(initialAt.add(time.duration.days(1)));
+            expect(await this.mintDrop4.getTotalRewards()).to.be.bignumber.equal(ether('0'));
+            await time.increaseTo(initialAt.add(time.duration.days(2)));
+            expect(
+                new BN(await this.mintDrop4.getTotalRewards()).divRound(ether('1'))
+            ).to.be.bignumber.equal(
+                TOTAL_BNC_REWARDS.div(new BN(BONUS_DURATION)).divRound(ether('1'))
+            );
+        });
+
+        it('when getIncrementalRewards should be ok', async function () {
+            const amount = ether('5');
+            await this.mintDrop4.deposit({ from: user1, value: amount });
+            await time.increaseTo(initialAt.add(time.duration.hours(12)));
+            expect(await this.mintDrop4.getIncrementalRewards(user1)).to.be.bignumber.equal(ether('0'));
+            await time.increaseTo(initialAt.add(time.duration.days(1)));
+            expect(await this.mintDrop4.getIncrementalRewards(user1)).to.be.bignumber.equal(ether('0'));
+            await time.increaseTo(initialAt.add(time.duration.days(2)));
+            expect(await this.mintDrop4.getIncrementalRewards(user1)).to.be.bignumber.equal(
+                TOTAL_BNC_REWARDS.div(new BN(BONUS_DURATION)).div(new BN(MAX_CLAIM_DURATION))
+            );
         });
     });
 });
