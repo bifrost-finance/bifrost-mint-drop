@@ -142,6 +142,10 @@ contract MintDrop is Ownable {
         IVETH(vETHAddress).unpause();
     }
 
+    function unlockWithdraw() external onlyOwner {
+        withdrawLocked = false;
+    }
+
     /* ========== VIEWS ========== */
 
     function getTotalRewards() public view returns (uint) {
