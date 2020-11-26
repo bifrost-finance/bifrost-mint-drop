@@ -139,7 +139,9 @@ contract MintDrop is Ownable {
     function lockWithdraw() external onlyOwner {
         withdrawLocked = true;
         // enable vETH transfer, MintDrop should have ownership of vETH contract
-        IVETH(vETHAddress).unpause();
+        if (IVETH(vETHAddress).paused()) {
+            IVETH(vETHAddress).unpause();
+        }
     }
 
     function unlockWithdraw() external onlyOwner {

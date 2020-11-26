@@ -60,6 +60,10 @@ describe('MintDrop', function () {
                 this.mintDrop.lockWithdraw({ from: user1 }),
                 "caller is not the owner"
             );
+            await expectRevert(
+                this.mintDrop.unlockWithdraw({ from: user1 }),
+                "caller is not the owner"
+            );
             await this.mintDrop.withdraw(amount, { from: user1 });
             expect(await web3.eth.getBalance(this.mintDrop.address)).to.be.bignumber.equal(ether('0'));
             expect(await this.mintDrop.myDeposit(user1)).to.be.bignumber.equal(ether('0'));
@@ -67,10 +71,15 @@ describe('MintDrop', function () {
             expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(ether('0'));
             expect(await this.veth.totalSupply()).to.be.bignumber.equal(ether('0'));
             await this.mintDrop.lockWithdraw({ from: owner });
+            expect(await this.mintDrop.withdrawLocked()).to.equal(true);
             await expectRevert(
                 this.mintDrop.withdraw(amount, { from: user1 }),
                 "withdrawal locked"
             );
+            await this.mintDrop.unlockWithdraw({ from: owner });
+            expect(await this.mintDrop.withdrawLocked()).to.equal(false);
+            await this.mintDrop.lockWithdraw({ from: owner });
+            expect(await this.mintDrop.withdrawLocked()).to.equal(true);
         });
 
         it('when new validator should be ok', async function () {
@@ -81,6 +90,7 @@ describe('MintDrop', function () {
             const withdrawal_credentials = web3.utils.hexToBytes("0x008e3571729cbfb9212496fe1c3bc6a5b46f62370937dcbae8f62b5a326f6fdf");
             const signature = web3.utils.hexToBytes("0x8b66f46c10c3920e4b8e8776b298ab5efc3eca0d08709dde56d04a26706694bc35a3c7eb373bbf36079c65c944f2acd611d9e74c83e829d6c01ba7816beb0ee5d1f680e28e9c546e6f689b96a9d5455279c68c28ef2312da137bda2a12ebbbc7");
             const deposit_data_root = "0xe763e880b74290438d6ec655201c50a2d8a80bcb6f428767c2d4ce735011c488";
+            expect(await this.mintDrop.totalLocked()).to.be.bignumber.equal(ether('0'));
             await expectRevert(
                 this.mintDrop.lockForValidator(
                     pubkey,
@@ -109,6 +119,8 @@ describe('MintDrop', function () {
                 deposit_data_root,
                 { from: owner }
             );
+            expect(await this.deposit.get_deposit_count()).to.be.bignumber.equal(new BN('0x0100000000000000'));
+            expect(await this.mintDrop.totalLocked()).to.be.bignumber.equal(amount);
             expect(await web3.eth.getBalance(this.mintDrop.address)).to.be.bignumber.equal(ether('0'));
             expect(await web3.eth.getBalance(this.deposit.address)).to.be.bignumber.equal(amount);
         });
