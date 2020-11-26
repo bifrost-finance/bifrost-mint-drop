@@ -34,13 +34,13 @@ contract MintDrop is Ownable {
     /* ========== STATE VARIABLES ========== */
 
     // address of vETH
-    address public vETHAddress;
+    address public immutable vETHAddress;
     // address of Ethereum 2.0 Deposit Contract
-    address public depositAddress;
+    address public immutable depositAddress;
+    // a timestamp when the bonus activity initialized
+    uint public immutable bonusStartAt;
     // a flag to control whether the withdraw function is locked
     bool public withdrawLocked;
-    // a timestamp when the bonus activity initialized
-    uint public bonusStartAt;
     // total amount of ETH deposited to Ethereum 2.0 Deposit Contract
     uint public totalLocked;
     // total amount of ETH deposited in this contract
@@ -96,12 +96,12 @@ contract MintDrop is Ownable {
     function claimRewards() public {
         // claim must start from bonusStartAt
         if (now < bonusStartAt) {
-            if (myLastClaimedAt[msg.sender] == 0) {
+            if (myLastClaimedAt[msg.sender] < bonusStartAt) {
                 myLastClaimedAt[msg.sender] = bonusStartAt;
             }
             return;
         }
-        if (myLastClaimedAt[msg.sender] > 0) {
+        if (myLastClaimedAt[msg.sender] >= bonusStartAt) {
             uint rewards = getIncrementalRewards(msg.sender);
             myRewards[msg.sender] = myRewards[msg.sender].add(rewards);
             claimedRewards = claimedRewards.add(rewards);
@@ -120,7 +120,6 @@ contract MintDrop is Ownable {
     ) external onlyOwner isWithdrawLocked {
         uint amount = 32 ether;
         require(address(this).balance >= amount, "insufficient balance");
-        require(address(this).balance.add(totalLocked) == totalDeposit, "invalid balance");
         totalLocked = totalLocked.add(amount);
         IDepositContract(depositAddress).deposit{value: amount}(
             pubkey,
@@ -136,7 +135,7 @@ contract MintDrop is Ownable {
         emit BindAddress(msg.sender, bifrostAddress_);
     }
 
-    function lockWithdraw() external onlyOwner {
+    function lockWithdraw() external onlyOwner isWithdrawNotLocked {
         withdrawLocked = true;
         // enable vETH transfer, MintDrop should have ownership of vETH contract
         if (IVETH(vETHAddress).paused()) {
@@ -144,7 +143,7 @@ contract MintDrop is Ownable {
         }
     }
 
-    function unlockWithdraw() external onlyOwner {
+    function unlockWithdraw() external onlyOwner isWithdrawLocked {
         withdrawLocked = false;
     }
 
@@ -185,7 +184,7 @@ contract MintDrop is Ownable {
         return rewards;
     }
 
-    function getRewards(address target) public view returns (uint) {
+    function getRewards(address target) external view returns (uint) {
         return myRewards[target].add(getIncrementalRewards(target));
     }
 

@@ -71,12 +71,20 @@ describe('MintDrop', function () {
             expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(ether('0'));
             expect(await this.veth.totalSupply()).to.be.bignumber.equal(ether('0'));
             await this.mintDrop.lockWithdraw({ from: owner });
+            await expectRevert(
+                this.mintDrop.lockWithdraw({ from: owner }),
+                "withdrawal locked"
+            );
             expect(await this.mintDrop.withdrawLocked()).to.equal(true);
             await expectRevert(
                 this.mintDrop.withdraw(amount, { from: user1 }),
                 "withdrawal locked"
             );
             await this.mintDrop.unlockWithdraw({ from: owner });
+            await expectRevert(
+                this.mintDrop.unlockWithdraw({ from: owner }),
+                "withdrawal not locked"
+            );
             expect(await this.mintDrop.withdrawLocked()).to.equal(false);
             await this.mintDrop.lockWithdraw({ from: owner });
             expect(await this.mintDrop.withdrawLocked()).to.equal(true);
