@@ -13,8 +13,6 @@ contract ClaimRewards is OwnableUpgradeSafe {
     using SafeERC20 for IERC20;
     using ECDSA for bytes32;
 
-    /* ========== CONSTANTS ========== */
-
     /* ========== STATE VARIABLES ========== */
 
     // signer address of claim request
@@ -42,22 +40,20 @@ contract ClaimRewards is OwnableUpgradeSafe {
 
     function claim(uint amount, uint expireAt, bytes memory signature) external {
         require(now < expireAt, "expired");
-        require(amount > 0 , "invalid amount");
 
         bytes32 message = keccak256(abi.encode(msg.sender, amount, expireAt));
         bytes32 hashMessage = message.toEthSignedMessageHash();
         require(signer == hashMessage.recover(signature), "invalid signature");
 
-        totalClaimed = totalClaimed.add(amount);
-        myClaimed[msg.sender] = myClaimed[msg.sender].add(amount);
-        IERC20(vETHAddress).safeTransferFrom(address(this), msg.sender, amount);
-
+        if (amount > 0) {
+            totalClaimed = totalClaimed.add(amount);
+            myClaimed[msg.sender] = myClaimed[msg.sender].add(amount);
+            IERC20(vETHAddress).safeTransfer(msg.sender, amount);
+        }
         emit Claimed(msg.sender, amount);
     }
 
     function setSigner(address signer_) external onlyOwner {
         signer = signer_;
     }
-
-    /* ========== VIEWS ========== */
 }

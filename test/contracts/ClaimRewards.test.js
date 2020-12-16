@@ -9,12 +9,13 @@ const ClaimRewards = contract.fromArtifact('ClaimRewards');
 
 // Start test block
 describe('ClaimRewards', function () {
-    const [ owner, signer, user1 ] = accounts;
-    const [ ownerPk, signerPK ] = privateKeys;
+    const [ owner, signer, user1, user2 ] = accounts;
+    const [ _, signerPrivateKey ] = privateKeys;
 
     beforeEach(async function () {
         // Deploy vETH contract for each test
         this.veth = await ERC20.new({ from: owner });
+        await this.veth.unpause({ from: owner });
 
         // Deploy ClaimRewards contract for each test
         this.claimRewards = await ClaimRewards.new({ from: owner });
@@ -22,6 +23,7 @@ describe('ClaimRewards', function () {
         expect(await this.claimRewards.vETHAddress()).to.equal(this.veth.address);
         expect(await this.claimRewards.signer()).to.equal(signer);
 
+        // mint vETH
         await this.veth.mint(this.claimRewards.address, ether('10000'), { from: owner });
         expect(await this.veth.balanceOf(this.claimRewards.address)).to.be.bignumber.equal(ether('10000'));
     });
@@ -35,7 +37,15 @@ describe('ClaimRewards', function () {
             [user1, amount.toString(), expireAt.toString()]
         );
         const hash = web3.utils.keccak256(encoded);
-        const sig = web3.eth.accounts.sign(hash, signerPK);
+        const sig = web3.eth.accounts.sign(hash, signerPrivateKey);
+        await expectRevert(
+            this.claimRewards.claim(amount, expireAt, sig.signature, { from: user2 }),
+            "invalid signature"
+        );
         await this.claimRewards.claim(amount, expireAt, sig.signature, { from: user1 });
+        expect(await this.claimRewards.totalClaimed()).to.be.bignumber.equal(ether('5'));
+        expect(await this.claimRewards.myClaimed(user1)).to.be.bignumber.equal(ether('5'));
+        expect(await this.veth.balanceOf(this.claimRewards.address)).to.be.bignumber.equal(ether('9995'));
+        expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(ether('5'));
     });
 });
