@@ -29,20 +29,25 @@ describe('ClaimRewards', function () {
     });
 
     it('when claim should be ok', async function () {
+        const index = 100;
         const amount = ether('5');
         const now = await time.latest();
         const expireAt = now.add(time.duration.days(1));
         const encoded = web3.eth.abi.encodeParameters(
-            ['address','uint', 'uint'],
-            [user1, amount.toString(), expireAt.toString()]
+            ['address', 'uint', 'uint', 'uint'],
+            [user1, index.toString(), amount.toString(), expireAt.toString()]
         );
         const hash = web3.utils.keccak256(encoded);
         const sig = web3.eth.accounts.sign(hash, signerPrivateKey);
         await expectRevert(
-            this.claimRewards.claim(amount, expireAt, sig.signature, { from: user2 }),
+            this.claimRewards.claim(index, amount, expireAt, sig.signature, { from: user2 }),
             "invalid signature"
         );
-        await this.claimRewards.claim(amount, expireAt, sig.signature, { from: user1 });
+        await this.claimRewards.claim(index, amount, expireAt, sig.signature, { from: user1 });
+        await expectRevert(
+            this.claimRewards.claim(index, amount, expireAt, sig.signature, { from: user1 }),
+            "claimed"
+        );
         expect(await this.claimRewards.totalClaimed()).to.be.bignumber.equal(ether('5'));
         expect(await this.claimRewards.myClaimed(user1)).to.be.bignumber.equal(ether('5'));
         expect(await this.veth.balanceOf(this.claimRewards.address)).to.be.bignumber.equal(ether('9995'));

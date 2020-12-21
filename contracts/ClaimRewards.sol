@@ -23,6 +23,8 @@ contract ClaimRewards is OwnableUpgradeSafe {
     uint public totalClaimed;
     // user address => amount of user claimed
     mapping(address => uint) public myClaimed;
+    // claim index => if the bonus has been claimed
+    mapping(uint => bool) public claimed;
 
     /* ========== EVENTS ========== */
 
@@ -38,10 +40,12 @@ contract ClaimRewards is OwnableUpgradeSafe {
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
-    function claim(uint amount, uint expireAt, bytes memory signature) external {
+    function claim(uint index, uint amount, uint expireAt, bytes memory signature) external {
         require(now < expireAt, "expired");
+        require(!claimed[index], "claimed");
+        claimed[index] = true;
 
-        bytes32 message = keccak256(abi.encode(msg.sender, amount, expireAt));
+        bytes32 message = keccak256(abi.encode(msg.sender, index, amount, expireAt));
         bytes32 hashMessage = message.toEthSignedMessageHash();
         require(signer == hashMessage.recover(signature), "invalid signature");
 
