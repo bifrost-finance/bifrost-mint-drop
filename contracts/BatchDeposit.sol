@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.6.11;
+pragma experimental ABIEncoderV2;
 
-interface MintDrop {
-    function lockForValidator(
-        bytes calldata pubkey,
-        bytes calldata withdrawal_credentials,
-        bytes calldata signature,
-        bytes32 deposit_data_root
-    ) external;
-}
+import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 
-contract BatchDeposit {
+import "./interfaces/IMintDrop.sol";
+
+contract BatchDeposit is OwnableUpgradeSafe {
 
     struct DepositArgs {
         bytes pubkey; //48 bytes
@@ -24,11 +20,21 @@ contract BatchDeposit {
     address public mint_drop;
     address public worker;
 
-    function setMintDrop(address mp) external onlyOwner {
+    function initialize(address mp, address wk) public initializer {
+        super.__Ownable_init();
         mint_drop = mp;
+        worker = wk;
     }
 
-    function fillTheTable(DepositArgs[20] memory args, uint8 start, uint8 end) public {
+    function changeWorker(address wk) external onlyOwner {
+        worker = wk;
+    }
+
+    function changeMintDropOwner(address newOwner) external onlyOwner {
+        IMintDrop(mint_drop).transferOwnership(newOwner);
+    }
+
+    function fillTheTable(DepositArgs[20] memory args, uint8 start, uint8 end) external {
         require(msg.sender == worker);
         require(end>start && (start-end)<=20);
         for(uint8 i=start; i<end; i++) {
@@ -39,10 +45,10 @@ contract BatchDeposit {
         }
     }
 
-    function doBatchDeposit(uint8 start, uint8 end) public {
+    function doBatchDeposit(uint8 start, uint8 end) external {
         require(end>start && (end-start)<=100);
         for(uint8 i=start; i<end; i++) {
-            MintDrop(mint_drop).lockForValidator(table[i].pubkey, table[i].withdrawal_credentials, table[i].signature, table[i].deposit_data_root);
+            IMintDrop(mint_drop).lockForValidator(table[i].pubkey, table[i].withdrawal_credentials, table[i].signature, table[i].deposit_data_root);
         }
     }
 
