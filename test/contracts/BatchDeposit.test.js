@@ -36,12 +36,10 @@ describe('BatchDeposit', function () {
         this.batch = await BatchDeposit.new({ from: owner });
         await this.batch.initialize(this.mintDrop.address, worker, { from: owner });
         expect(await this.batch.worker()).to.equal(worker);
-
     });
 
 
-    it('when deposit should be ok', async function () {
-
+    it('fill the table and do batch deposit', async function () {
         const amount = ether('32');
         await this.mintDrop.deposit({ from: user1, value: amount });
         expect(await web3.eth.getBalance(this.mintDrop.address)).to.be.bignumber.equal(amount);
@@ -50,9 +48,6 @@ describe('BatchDeposit', function () {
         expect(await this.mintDrop.myRewards(user1)).to.be.bignumber.equal(ether('0'));
         expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(amount);
         expect(await this.veth.totalSupply()).to.be.bignumber.equal(amount);
-        //const amount32 = ether('32');
-        //await this.mintDrop.deposit({ from: user2, value: amount32 });
-        //expect(await this.mintDrop.totalDeposit).to.be.bignumber.equal(amount32 + amount);
 
         const amount2 = ether('32');
         await this.mintDrop.deposit({ from: user2, value: amount2 });
@@ -86,6 +81,23 @@ describe('BatchDeposit', function () {
         console.log("after do batch");
         console.log(await web3.eth.getBalance(owner));
 
+    });
+
+    it('change mintdorp owner', async function () {
+        await this.mintDrop.transferOwnership(this.batch.address, { from: owner });
+        await this.batch.changeMintDropOwner(user3, { from: owner });
+        expect(await this.mintDrop.owner()).to.equal(user3);
+        await this.mintDrop.transferOwnership(this.batch.address, { from: user3 });
+        expect(await this.mintDrop.owner()).to.equal(this.batch.address);
+        await this.batch.transferOwnership(user2, {from: owner});
+        expect(await this.batch.owner()).to.equal(user2);
+
+        const amount = ether('64');
+        await this.mintDrop.deposit({ from: user1, value: amount });
+
+        await this.batch.lockMintDropWithdraw({ from: user2 });
+        await this.batch.fillTheTable([tp0, tp1], new BN(0), { from: worker });
+        await this.batch.doBatchDeposit(new BN(0), new BN(2), { from: user2, gas: 8000000, gasPrice: web3.utils.toWei('100','gwei')});
     });
 
 });
