@@ -11,4 +11,6 @@ interface IMintDrop {
     ) external;
 
     function transferOwnership(address newOwner) external;
+    function lockWithdraw() external;
+    function unlockWithdraw() external;
 }

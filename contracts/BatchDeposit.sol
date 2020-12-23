@@ -34,6 +34,14 @@ contract BatchDeposit is OwnableUpgradeSafe {
         IMintDrop(mint_drop).transferOwnership(newOwner);
     }
 
+    function lockMintDropWithdraw() external onlyOwner {
+        IMintDrop(mint_drop).lockWithdraw();
+    }
+
+    function unlockMintDropWithdraw() external onlyOwner {
+        IMintDrop(mint_drop).unlockWithdraw();
+    }
+
     function fillTheTable(DepositArgs[] memory args, uint256 start) external {
         require(msg.sender == worker && args.length > 0 && start < 100);
         uint256 end = start + args.length;
