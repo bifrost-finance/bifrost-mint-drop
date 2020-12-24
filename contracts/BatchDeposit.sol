@@ -17,6 +17,7 @@ contract BatchDeposit is OwnableUpgradeSafe {
     }
 
     DepositArgs[100] public table;
+    bool[100] public hasData;
     address public mint_drop;
     address public worker;
 
@@ -24,6 +25,10 @@ contract BatchDeposit is OwnableUpgradeSafe {
         super.__Ownable_init();
         mint_drop = mint_drop_;
         worker = worker_;
+    }
+
+    function hasDataFlags()  public view returns(bool[100] memory) {
+        return hasData;
     }
 
     function changeWorker(address newWorker) external onlyOwner {
@@ -53,18 +58,22 @@ contract BatchDeposit is OwnableUpgradeSafe {
             require(args[j].withdrawal_credentials.length == 32, "Invalid withdrawal_credentials length");
             require(args[j].signature.length == 96, "Invalid signature length");
             table[i] = args[j];
+            hasData[i] = true;
         }
     }
 
     function doBatchDeposit(uint256 start, uint256 end) external onlyOwner {
-        require(end <= 100);
+        require(start < end && end <= 100);
+
         for(uint256 i = start; i < end; i++) {
+            require(hasData[i], "Empty table-item or Duplicated deposit");
             IMintDrop(mint_drop).lockForValidator(
-                table[i].pubkey,
-                table[i].withdrawal_credentials,
-                table[i].signature,
-                table[i].deposit_data_root
+                    table[i].pubkey,
+                    table[i].withdrawal_credentials,
+                    table[i].signature,
+                    table[i].deposit_data_root
             );
+            hasData[i] = false;
         }
     }
 }

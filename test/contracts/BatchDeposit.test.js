@@ -11,7 +11,7 @@ const DepositContract = contract.fromArtifact('DepositContract');
 
 // Start test block
 describe('BatchDeposit', function () {
-    const [ owner, user1, user2, user3, worker ] = accounts;
+    const [ owner, worker, user1, user2, user3, user4, user5 ] = accounts;
     let tp0, tp1;
 
     beforeEach(async function () {
@@ -94,10 +94,18 @@ describe('BatchDeposit', function () {
 
         const amount = ether('64');
         await this.mintDrop.deposit({ from: user1, value: amount });
+        await this.mintDrop.deposit({ from: user2, value: amount });
+        await this.mintDrop.deposit({ from: user3, value: amount });
+        await this.mintDrop.deposit({ from: user4, value: amount });
+        await this.mintDrop.deposit({ from: user5, value: amount });
+
 
         await this.batch.lockMintDropWithdraw({ from: user2 });
         await this.batch.fillTheTable([tp0, tp1], new BN(0), { from: worker });
-        await this.batch.doBatchDeposit(new BN(0), new BN(2), { from: user2, gas: 8000000, gasPrice: web3.utils.toWei('100','gwei')});
+        await this.batch.fillTheTable([tp0, tp1], new BN(2), { from: worker });
+        await this.batch.fillTheTable([tp0, tp1], new BN(4), { from: worker });
+        await this.batch.fillTheTable([tp0, tp1, tp0, tp1, tp0, tp1, tp0, tp1, tp0, tp1, tp0, tp1, tp0, tp1], new BN(6), { from: worker });
+        await this.batch.doBatchDeposit(new BN(0), new BN(10), { from: user2, gas: 8000000, gasPrice: web3.utils.toWei('100','gwei')});
     });
 
 });
