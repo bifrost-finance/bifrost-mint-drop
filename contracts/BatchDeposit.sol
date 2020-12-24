@@ -48,7 +48,7 @@ contract BatchDeposit is OwnableUpgradeSafe {
     }
 
     function fillTheTable(DepositArgs[] memory args, uint256 start) external {
-        require(msg.sender == worker && args.length > 0 && start < 100, "Length or position error");
+        require(msg.sender == worker && args.length > 0 && start < 100, "Invalid Sender or Length/Position error");
         uint256 end = start + args.length;
         require(end <= 100, "Position error");
 
