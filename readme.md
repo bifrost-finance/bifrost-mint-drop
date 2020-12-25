@@ -39,16 +39,18 @@ Ethereum 2.0 Phase 2 activates, vETH restarts redemption.
 ## Contract Address
 ### Mainnet 
 ```
- Deposit: 0x00000000219ab540356cbb839cbe05303d7705fa
-MintDrop: 0xec1d6163e05b3f5d0fb8f354881f6c8b793ad612
-    vEth: 0xc3d088842dcf02c13699f936bb83dfbbc6f721ab
+     Deposit: 0x00000000219ab540356cbb839cbe05303d7705fa
+    MintDrop: 0xec1d6163e05b3f5d0fb8f354881f6c8b793ad612
+BatchDeposit: 0x981D04a5b466d322Da5443aede52cF0374945ad9
+        vEth: 0xc3d088842dcf02c13699f936bb83dfbbc6f721ab
 ```
 
 ## Rinkeby Testnet
 ```
- Deposit: 0x0B814d1e94a59a7f466A08D4942f6A35E71E77ab
-MintDrop: 0x34cE0891c24E0bfCEefC57976f88060b2B3c026E
-    vEth: 0xF977A4F94641E83d3C8dB062038EB1f37c9c5c3d
+     Deposit: 0x0B814d1e94a59a7f466A08D4942f6A35E71E77ab
+    MintDrop: 0x34cE0891c24E0bfCEefC57976f88060b2B3c026E
+ClaimRewards: 0xbdE8b18b905e61696f7B13Db3A140955f768113c
+        vEth: 0xF977A4F94641E83d3C8dB062038EB1f37c9c5c3d
 ```
 
 ## Contract Audit Report
