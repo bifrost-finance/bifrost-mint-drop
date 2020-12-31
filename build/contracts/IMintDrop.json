@@ -1,0 +1,377 @@
+{
+  "fileName": "IMintDrop.sol",
+  "contractName": "IMintDrop",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.6.11;\n\ninterface IMintDrop {\n    function lockForValidator(\n        bytes calldata pubkey,\n        bytes calldata withdrawal_credentials,\n        bytes calldata signature,\n        bytes32 deposit_data_root\n    ) external;\n\n    function transferOwnership(address newOwner) external;\n    function lockWithdraw() external;\n    function unlockWithdraw() external;\n}\n",
+  "sourcePath": "contracts/interfaces/IMintDrop.sol",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "pubkey",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "withdrawal_credentials",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "deposit_data_root",
+          "type": "bytes32"
+        }
+      ],
+      "name": "lockForValidator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lockWithdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unlockWithdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "ast": {
+    "absolutePath": "contracts/interfaces/IMintDrop.sol",
+    "exportedSymbols": {
+      "IMintDrop": [
+        3993
+      ]
+    },
+    "id": 3994,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3970,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:22"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3993,
+        "linearizedBaseContracts": [
+          3993
+        ],
+        "name": "IMintDrop",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "d5a2313a",
+            "id": 3981,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "lockForValidator",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3979,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3972,
+                  "mutability": "mutable",
+                  "name": "pubkey",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3981,
+                  "src": "119:21:22",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3971,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "119:5:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3974,
+                  "mutability": "mutable",
+                  "name": "withdrawal_credentials",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3981,
+                  "src": "150:37:22",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3973,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "150:5:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3976,
+                  "mutability": "mutable",
+                  "name": "signature",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3981,
+                  "src": "197:24:22",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3975,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "197:5:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3978,
+                  "mutability": "mutable",
+                  "name": "deposit_data_root",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3981,
+                  "src": "231:25:22",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3977,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "231:7:22",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "109:153:22"
+            },
+            "returnParameters": {
+              "id": 3980,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "271:0:22"
+            },
+            "scope": 3993,
+            "src": "84:188:22",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "f2fde38b",
+            "id": 3986,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "transferOwnership",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3984,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3983,
+                  "mutability": "mutable",
+                  "name": "newOwner",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3986,
+                  "src": "305:16:22",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3982,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "305:7:22",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "304:18:22"
+            },
+            "returnParameters": {
+              "id": 3985,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "331:0:22"
+            },
+            "scope": 3993,
+            "src": "278:54:22",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "a425632f",
+            "id": 3989,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "lockWithdraw",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3987,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "358:2:22"
+            },
+            "returnParameters": {
+              "id": 3988,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "369:0:22"
+            },
+            "scope": 3993,
+            "src": "337:33:22",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "b31dbd34",
+            "id": 3992,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "unlockWithdraw",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3990,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "398:2:22"
+            },
+            "returnParameters": {
+              "id": 3991,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "409:0:22"
+            },
+            "scope": 3993,
+            "src": "375:35:22",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3994,
+        "src": "58:354:22"
+      }
+    ],
+    "src": "33:380:22"
+  },
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.11+commit.5ef660b1.Emscripten.clang",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "evmVersion": "petersburg"
+  }
+}
