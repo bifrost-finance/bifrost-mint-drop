@@ -12,9 +12,9 @@ interface IBatchDeposit {
         bytes32 deposit_data_root;
     }
 
-    function table(uint256 indx) external view returns(DepositArgs memory);
+    function table(uint256 index) external view returns(bytes memory pubkey, bytes memory withdrawal_credentials, bytes memory signature, bytes32 deposit_data_root);
     
-    function hasData(uint256 indx) external view returns(bool);
+    function hasData(uint256 index) external view returns(bool);
     
     function mint_drop() external view returns(address);
     
