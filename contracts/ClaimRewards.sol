@@ -23,10 +23,10 @@ contract ClaimRewards is OwnableUpgradeSafe {
     uint public totalClaimed;
     // user address => amount of user claimed
     mapping(address => uint) public myClaimed;
-    // claim index => timestamp of next claim action
-    mapping(address => uint) public myNextClaimAfter;
     // claim index => if the bonus has been claimed
     mapping(uint => bool) public claimed;
+    // claim index => timestamp of next claim action
+    mapping(address => uint) public myNextClaimAfter;
 
     /* ========== EVENTS ========== */
 
