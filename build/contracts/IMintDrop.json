@@ -66,15 +66,15 @@
     "absolutePath": "contracts/interfaces/IMintDrop.sol",
     "exportedSymbols": {
       "IMintDrop": [
-        3993
+        4020
       ]
     },
-    "id": 3994,
+    "id": 4021,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3970,
+        "id": 3997,
         "literals": [
           "solidity",
           "0.6",
@@ -90,9 +90,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3993,
+        "id": 4020,
         "linearizedBaseContracts": [
-          3993
+          4020
         ],
         "name": "IMintDrop",
         "nodeType": "ContractDefinition",
@@ -101,7 +101,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d5a2313a",
-            "id": 3981,
+            "id": 4008,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -109,17 +109,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3979,
+              "id": 4006,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3972,
+                  "id": 3999,
                   "mutability": "mutable",
                   "name": "pubkey",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3981,
+                  "scope": 4008,
                   "src": "119:21:22",
                   "stateVariable": false,
                   "storageLocation": "calldata",
@@ -128,7 +128,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 3971,
+                    "id": 3998,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "119:5:22",
@@ -142,12 +142,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 3974,
+                  "id": 4001,
                   "mutability": "mutable",
                   "name": "withdrawal_credentials",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3981,
+                  "scope": 4008,
                   "src": "150:37:22",
                   "stateVariable": false,
                   "storageLocation": "calldata",
@@ -156,7 +156,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 3973,
+                    "id": 4000,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "150:5:22",
@@ -170,12 +170,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 3976,
+                  "id": 4003,
                   "mutability": "mutable",
                   "name": "signature",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3981,
+                  "scope": 4008,
                   "src": "197:24:22",
                   "stateVariable": false,
                   "storageLocation": "calldata",
@@ -184,7 +184,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 3975,
+                    "id": 4002,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "197:5:22",
@@ -198,12 +198,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 3978,
+                  "id": 4005,
                   "mutability": "mutable",
                   "name": "deposit_data_root",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3981,
+                  "scope": 4008,
                   "src": "231:25:22",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -212,7 +212,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 3977,
+                    "id": 4004,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "231:7:22",
@@ -228,12 +228,12 @@
               "src": "109:153:22"
             },
             "returnParameters": {
-              "id": 3980,
+              "id": 4007,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "271:0:22"
             },
-            "scope": 3993,
+            "scope": 4020,
             "src": "84:188:22",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -243,7 +243,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "f2fde38b",
-            "id": 3986,
+            "id": 4013,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -251,17 +251,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3984,
+              "id": 4011,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3983,
+                  "id": 4010,
                   "mutability": "mutable",
                   "name": "newOwner",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3986,
+                  "scope": 4013,
                   "src": "305:16:22",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -270,7 +270,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3982,
+                    "id": 4009,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "305:7:22",
@@ -287,12 +287,12 @@
               "src": "304:18:22"
             },
             "returnParameters": {
-              "id": 3985,
+              "id": 4012,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "331:0:22"
             },
-            "scope": 3993,
+            "scope": 4020,
             "src": "278:54:22",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -302,7 +302,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "a425632f",
-            "id": 3989,
+            "id": 4016,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -310,18 +310,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3987,
+              "id": 4014,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "358:2:22"
             },
             "returnParameters": {
-              "id": 3988,
+              "id": 4015,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "369:0:22"
             },
-            "scope": 3993,
+            "scope": 4020,
             "src": "337:33:22",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -331,7 +331,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b31dbd34",
-            "id": 3992,
+            "id": 4019,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -339,25 +339,25 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3990,
+              "id": 4017,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "398:2:22"
             },
             "returnParameters": {
-              "id": 3991,
+              "id": 4018,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "409:0:22"
             },
-            "scope": 3993,
+            "scope": 4020,
             "src": "375:35:22",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3994,
+        "scope": 4021,
         "src": "58:354:22"
       }
     ],

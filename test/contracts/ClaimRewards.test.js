@@ -29,16 +29,16 @@ describe('ClaimRewards', function () {
     });
 
     it('when claim should be ok', async function () {
-        const index = 100;
+        let index = 100;
         const amount = ether('5');
-        const now = await time.latest();
-        const expireAt = now.add(time.duration.days(1));
-        const encoded = web3.eth.abi.encodeParameters(
+        let now = await time.latest();
+        let expireAt = now.add(time.duration.days(1));
+        let encoded = web3.eth.abi.encodeParameters(
             ['address', 'uint', 'uint', 'uint'],
             [user1, index.toString(), amount.toString(), expireAt.toString()]
         );
-        const hash = web3.utils.keccak256(encoded);
-        const sig = web3.eth.accounts.sign(hash, signerPrivateKey);
+        let hash = web3.utils.keccak256(encoded);
+        let sig = web3.eth.accounts.sign(hash, signerPrivateKey);
         await expectRevert(
             this.claimRewards.claim(index, amount, expireAt, sig.signature, { from: user2 }),
             "invalid signature"
@@ -52,5 +52,35 @@ describe('ClaimRewards', function () {
         expect(await this.claimRewards.myClaimed(user1)).to.be.bignumber.equal(ether('5'));
         expect(await this.veth.balanceOf(this.claimRewards.address)).to.be.bignumber.equal(ether('9995'));
         expect(await this.veth.balanceOf(user1)).to.be.bignumber.equal(ether('5'));
+
+        await time.increase(time.duration.hours(1));
+
+        index = 101;
+        now = await time.latest();
+        expireAt = now.add(time.duration.days(1));
+        encoded = web3.eth.abi.encodeParameters(
+            ['address', 'uint', 'uint', 'uint'],
+            [user1, index.toString(), amount.toString(), expireAt.toString()]
+        );
+        hash = web3.utils.keccak256(encoded);
+        sig = web3.eth.accounts.sign(hash, signerPrivateKey);
+        await expectRevert(
+            this.claimRewards.claim(index, amount, expireAt, sig.signature, { from: user1 }),
+            "claim too frequency"
+        );
+
+        await time.increase(time.duration.hours(23));
+        await time.increase(time.duration.seconds(1));
+        await this.claimRewards.claim(index, amount, expireAt, sig.signature, { from: user1 });
     });
+
+    it('when setSigner should be ok', async function () {
+        await this.claimRewards.setSigner(signer, { from: owner });
+        expect(await this.claimRewards.signer()).to.equal(signer);
+        await expectRevert(
+            this.claimRewards.setSigner(signer, { from: user1 }),
+            "caller is not the owner"
+        );
+    });
+
 });

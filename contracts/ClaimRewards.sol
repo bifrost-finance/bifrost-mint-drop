@@ -23,6 +23,8 @@ contract ClaimRewards is OwnableUpgradeSafe {
     uint public totalClaimed;
     // user address => amount of user claimed
     mapping(address => uint) public myClaimed;
+    // claim index => timestamp of next claim action
+    mapping(address => uint) public myNextClaimAfter;
     // claim index => if the bonus has been claimed
     mapping(uint => bool) public claimed;
 
@@ -43,6 +45,7 @@ contract ClaimRewards is OwnableUpgradeSafe {
     function claim(uint index, uint amount, uint expireAt, bytes memory signature) external {
         require(now < expireAt, "expired");
         require(!claimed[index], "claimed");
+        require(myNextClaimAfter[msg.sender] < now, "claim too frequency");
         claimed[index] = true;
 
         bytes32 message = keccak256(abi.encode(msg.sender, index, amount, expireAt));
@@ -52,6 +55,7 @@ contract ClaimRewards is OwnableUpgradeSafe {
         if (amount > 0) {
             totalClaimed = totalClaimed.add(amount);
             myClaimed[msg.sender] = myClaimed[msg.sender].add(amount);
+            myNextClaimAfter[msg.sender] = expireAt;
             IERC20(vETHAddress).safeTransfer(msg.sender, amount);
         }
         emit Claimed(msg.sender, amount);
