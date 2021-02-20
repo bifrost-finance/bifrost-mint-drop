@@ -27,7 +27,7 @@ Start vETH transaction and keep minting, close redemption.
 Start vETH price increase to issue staking rewards.
 
 - **Phase 2**: 
-Bifrost Mainnet Launch (20201 Q1)
+Bifrost Mainnet Launch (2021 Q1)
 Bifrost connects to Polkadot Parachain, Ethereum has cross-chain bridge connect to Polkadot, and supports ETH token attribute conversion.
 Support vETH to deploy DeFi services on Bifrost Mainnet.
 Support vETH cross-chain transfer, transaction, lending and other DeFi protocol.
